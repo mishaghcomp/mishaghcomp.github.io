@@ -1,4 +1,3 @@
-// Firebase config (with your DB URL)
 // Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyApVGEIDpV5q9iHNqFoPdHI600pWdNyPiI",
@@ -69,67 +68,5 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
     statusEl.textContent = "❌ Failed to send. Please try again later.";
     statusEl.className = "err";
-  }
-});
-
-// Init Firebase (compat)
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// Elements
-const form = document.getElementById('contactForm');
-const statusEl = document.getElementById('status');
-
-const getVal = (id) => document.getElementById(id)?.value?.trim() ?? '';
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const name = getVal('name');
-  const email = getVal('email');
-  const subject = getVal('subject');
-  const message = getVal('message');
-
-  // Basic validation
-  if (!name || !email || !subject || !message) {
-    statusEl.textContent = 'Please fill out all fields.';
-    statusEl.className = 'err';
-    return;
-  }
-
-  statusEl.textContent = 'Sending…';
-  statusEl.className = '';
-
-  try {
-    // 1) Save to Firebase
-    await db.ref('messages').push({
-      name,
-      email,
-      subject,
-      message,
-      createdAt: Date.now(),
-      ua: navigator.userAgent
-    });
-
-    // 2) Optional: EmailJS notification
-    // Make sure you've called emailjs.init('YOUR_PUBLIC_KEY') in HTML first.
-    // Then fill your service & template IDs below.
-    /*
-    await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
-      from_name: name,
-      from_email: email,
-      subject,
-      message,
-      submitted_at: new Date().toLocaleString()
-    });
-    */
-
-    form.reset();
-    statusEl.textContent = '✅ Message sent & saved!';
-    statusEl.className = 'ok';
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = '❌ Failed to send. Please try again.';
-    statusEl.className = 'err';
   }
 });
