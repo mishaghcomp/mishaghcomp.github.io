@@ -41,7 +41,7 @@ form.addEventListener('submit', async (e) => {
   statusEl.textContent = "Sending...";
 
   try {
-    await db.ref("messages").push({
+    await db.ref("messages").push({ 
       name,
       email,
       message,
@@ -52,5 +52,15 @@ form.addEventListener('submit', async (e) => {
   } catch (error) {
     statusEl.textContent = "❌ Failed to send message.";
     console.error(error);
-  }
+  }// after a successful Firebase push:
+await emailjs.send('service_contact', 'template_contact', {
+  from_name: name,
+  from_email: email,
+  message,
+  submitted_at: new Date().toLocaleString()
+});
+// if both succeed:
+form.reset();
+statusEl.textContent = "✅ Message sent & saved!";
+
 });
