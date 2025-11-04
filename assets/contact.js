@@ -1,4 +1,4 @@
-// Your Firebase config
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyApVGEIDpV5q9iHNqFoPdHI600pWdNyPiI",
   authDomain: "project1and2-5b783.firebaseapp.com",
@@ -14,10 +14,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Form elements
+// Elements
 const form = document.getElementById("contactForm");
 const statusEl = document.getElementById("status");
 
+// Helper to grab field values
 const getVal = (id) => document.getElementById(id)?.value?.trim() ?? "";
 
 form.addEventListener("submit", async (e) => {
@@ -28,17 +29,18 @@ form.addEventListener("submit", async (e) => {
   const subject = getVal("subject");
   const message = getVal("message");
 
+  // Simple validation
   if (!name || !email || !subject || !message) {
     statusEl.textContent = "⚠️ Please fill out all fields.";
     statusEl.className = "err";
     return;
   }
 
-  statusEl.textContent = "Sending…";
+  statusEl.textContent = "Sending...";
   statusEl.className = "";
 
   try {
-    // ✅ 1. Save to Firebase Realtime DB
+    // ✅ 1. Save to Firebase
     await db.ref("messages").push({
       name,
       email,
@@ -48,10 +50,10 @@ form.addEventListener("submit", async (e) => {
       ua: navigator.userAgent,
     });
 
-    // ✅ 2. Send Email using EmailJS
+    // ✅ 2. Send an email with EmailJS
     await emailjs.send(
-      "service_mh80c98",        // your service ID
-      "YOUR_TEMPLATE_ID_HERE",  // replace with your EmailJS template ID
+      "service_mh80c98",      // your EmailJS service ID
+      "template_6l9ckcq",     // your EmailJS template ID
       {
         from_name: name,
         from_email: email,
@@ -66,7 +68,7 @@ form.addEventListener("submit", async (e) => {
     statusEl.className = "ok";
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "❌ Failed to send. Please try again later.";
+    statusEl.textContent = "❌ Something went wrong. Please try again later.";
     statusEl.className = "err";
   }
 });
